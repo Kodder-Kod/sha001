@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ref, update, push, remove, onValue } from 'firebase/database';
 import { db } from "../../../config";
 import { MdEmail } from "react-icons/md"
@@ -15,6 +15,7 @@ import { TbXboxX } from "react-icons/tb";
 import { useUserCart, useUserCartData, useUserCartTotal } from "@/app/componets/zustand/cart";
 import { FaCashRegister } from "react-icons/fa";
 import { useUserEmail, useUserName, useUserPhone } from "@/app/componets/zustand/profile";
+import { useUserCustomers } from "@/app/componets/zustand/customers";
 
 
 
@@ -42,6 +43,32 @@ const Debt = () => {
     const ticketTotal = useUserTicketTotal((state) => state.userTicketTotal)
     //const ticketTotal = useUserCartTotal((state) => state.userCartTotal)
     const theme = useUserTheme((state) => state.userTheme)
+
+    // ====================== CUSTOMERS (for id -> name resolution) ======================
+
+    const rawCustomers = useUserCustomers((state) => state.userCustomers)
+
+    const customersArray = useMemo(() => {
+        if (!rawCustomers) return [];
+        if (Array.isArray(rawCustomers)) return rawCustomers;
+        return Object.entries(rawCustomers).map(([id, value]) => ({ id, ...value }));
+    }, [rawCustomers]);
+
+    // Maps a customer id -> customer name. Anything saved/displayed for a
+    // "Customer" from here on should go through this lookup so we only ever
+    // carry the name forward, never the raw id.
+    const customerNameById = useMemo(() => {
+        const map = {};
+        customersArray.forEach((c) => {
+            map[c.id] = c.Name || "Unnamed Customer";
+        });
+        return map;
+    }, [customersArray]);
+
+    const resolveCustomerName = (customer) => {
+        if (!customer) return "-";
+        return customerNameById[customer] || customer;
+    };
 
     const [filteredTickets, setFilteredTickets] = useState(null);
     const [cart, setCart] = useState([]);
@@ -85,14 +112,19 @@ const Debt = () => {
 
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedTime, setSelectedTime] = useState("");
-        const [selectedCustomer, setSelectedCustomer] = useState("");
+    const [selectedCustomer, setSelectedCustomer] = useState("");
 
     const [deleteId, setDeleteId] = useState()
 
-    const handleTicketClick = (id, cartItems, cashier, cashSale, date,customer) => {
+    const handleTicketClick = (id, cartItems, cashier, cashSale, date, customer) => {
         setCart(cartItems);
         setCart1(cartItems);
-setSelectedCustomer(customer)
+
+        // "customer" here is ticket.Customer, which may be the customer's id.
+        // Resolve it to a name once, here, so everything downstream (state,
+        // UI, and the eventual saved cart record) only ever carries the name.
+        setSelectedCustomer(resolveCustomerName(customer));
+
         setDeleteId(id)
 
         setSelectedCashier(cashier);
@@ -144,7 +176,7 @@ setSelectedCustomer(customer)
     const sendModalFun = () => {
         setSelectEmployee("")
         setSelectedCashier('')
-setSelectedCustomer('')
+        setSelectedCustomer('')
         setSendModal(false);
     }
 
@@ -445,7 +477,7 @@ setSelectedCustomer('')
                                                     }`}
                                             >
                                                 <p className="text-xs sm:text-sm text-left">
-                                                    {ticket.Customer} <br />
+                                                    {resolveCustomerName(ticket.Customer)} <br />
                                                     <span className="opacity-60">
                                                         {new Date(ticket.Date).toLocaleString("en-GB")}
                                                     </span>

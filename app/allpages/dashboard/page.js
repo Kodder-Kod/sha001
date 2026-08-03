@@ -271,12 +271,15 @@ const Dashboard = () => {
   ///ticket function 
   const handleticket = () => {
     if (Id) {
-      if (cart && ticketName) {
+      if (cart && customerSelect) {
         if (total == 0) {
           console.log("total is zero")
           ticketfailTotal()
         }
         else {
+
+
+           console.log("total is zero", customerSelect)
           try {
             const dbRef = ref(db, `web/pos/${Id}/ticket/`);
             const newbranchRef = push(dbRef, {
@@ -604,7 +607,7 @@ const Dashboard = () => {
                       </button>
                     ))}
                 {!categories && (
-                  <div className="flex flex-col items-center justify-center py-12 animate-in fade-in duration-700">
+                  <div className=" flex-col hidden md:flex items-center justify-center py-12 animate-in fade-in duration-700">
                     {/* Animated Icon Container */}
                     <div className="relative group">
                       {/* Soft Glow Background Pulse */}
@@ -1011,7 +1014,7 @@ const Dashboard = () => {
 
               <select
                 className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#303133] shadow-md text-black text-xs sm:text-base"
-                value={paymentMethod}
+                value={customerSelect}
                 onChange={(e) => {
                   setCustomerSelect(e.target.value);
                 }}
@@ -1358,7 +1361,7 @@ const Dashboard = () => {
 
               <select
                 className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#303133] shadow-md text-black text-xs sm:text-base"
-                value={paymentMethod}
+                value={customerSelect}
                 onChange={(e) => {
                   setCustomerSelect(e.target.value);
                 }}

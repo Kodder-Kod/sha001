@@ -596,10 +596,10 @@ const Header = () => {
 
 
             {/**  Mobile and tablet view navbar */}
-            <div className={` top-0 z-50 shadow-xl w-screen text-sm block md:hidden   `}>
+            <div className={` top-0 z-100 shadow-xl w-screen text-sm block md:hidden   `}>
 
 
-                <div className={`    ${theme === "Dark"
+                <div className={`${theme === "Dark"
                     ? "bg-[#132962] text-white"
                     : " text-black   bg-white border-b shadow-xl"
                     } flex justify-between items-center px-4 py-1  shadow-xl `}>
@@ -616,7 +616,7 @@ const Header = () => {
 
                 {menuOpen && (
 
-                    <div className={`absolute p-4 shadow-xl text-black rounded-b-xl w-1/2 block md:hidden ${theme === "Dark" ? "bg-[#132962] text-white border-white" : " bg-white text-black border-blue-600"} `}>
+                    <div className={`z-100 absolute p-4 shadow-xl text-black rounded-b-xl w-1/2 block md:hidden ${theme === "Dark" ? "bg-[#132962] text-white border-white" : " bg-white text-black border-blue-600"} `}>
                         {allowedPages.map((item, index) => (
 
                             <div key={index} className={`border-b ${theme === "Dark" ? "bg-[#132962] text-white border-white" : "text-black border-blue-600"}`}>

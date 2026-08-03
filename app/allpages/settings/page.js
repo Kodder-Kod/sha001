@@ -22,6 +22,7 @@ import { FaDollarSign, FaPhoneAlt, FaUser } from "react-icons/fa";
 import { GiPadlock } from "react-icons/gi";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useUserLogs, useUserLogsData, useUserLogsTotal } from "@/app/componets/zustand/logs";
+import { useUserCustomers, useUserCustomersData, useUserCustomersTotal } from "@/app/componets/zustand/customers";
 
 
 const Settings = () => {
@@ -243,6 +244,10 @@ const Settings = () => {
                     useUserAccountName.persist.clearStorage();
 
 
+
+                    useUserCustomers.setState({ userCustomers: null })
+                    useUserCustomersTotal.setState({ userCustomersTotal: null })
+                    useUserCustomersData.setState({ userCustomersData: null })
                     useUserEmployee.setState({ userEmployee: null })
                     useUserEmployeeTotal.setState({ userEmployeeTotal: null })
                     useUserItems.setState({ userItems: null })
@@ -883,7 +888,7 @@ const Settings = () => {
                         <div className="flex justify-end space-x-2">
                             <button
                                 onClick={closeModal}
-                                className="bg-red-700 px-4 py-2 hover:bg-red-300 text-xs sm:text-base" 
+                                className="bg-red-700 px-4 py-2 hover:bg-red-300 text-xs sm:text-base"
                                 style={{ borderRadius: 9, color: "#ffffff" }}
                             >
                                 Cancel
